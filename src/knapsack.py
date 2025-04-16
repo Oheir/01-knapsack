@@ -1,5 +1,5 @@
 import os
-
+from itertools import  product
 
 class KnapsackInstance:
     """
@@ -23,8 +23,18 @@ class KnapsackInstance:
         return KnapsackInstance(W, V, C)
 
     @staticmethod
-    def load_instance_data(instance_name: str) -> str:
-        return ''
+    def load_from_file(filepath: str) -> "KnapsackInstance":
+        with open(filepath, "r") as file:
+            lines = file.readlines()
+        n, C = map(int, lines[0].split())
+        W, V = [], []
+ 
+        for line in lines[1:n+1]: 
+            w, v = map(int, line.split())
+            W.append(w)
+            V.append(v)
+ 
+        return KnapsackInstance(W, V, C)
 
     @staticmethod
     def test_instance() -> str:
@@ -63,14 +73,34 @@ class KnapsackSolver:
     def __init__(self, instance) -> None:
         self._inst = instance
         # 0-1 decision variables
-        self._X: list[int] = [0] * self._inst.size
+        self._X: list[int] = list(product([0,1], repeat = len(self.W)))
 
     def solve(self) -> tuple[int, ...]:
         """
         Solves the loaded instance and returns the assignment to the decision
         variables
         """
-        raise NotImplementedError
+        
+        items = list(product([0,1], repeat = len(W)))
+        items_w = []
+        items_v = []
+        max_v = []
+        maxim = 0
+        
+        
+        for x in _X:
+            for i in range(len(x)):
+                items_w.append(x[i] * self.W[i])
+                items_v.append(x[i] * self.V[i])
+                
+            if weight(items_w) <= C and value(items_v) > sum(max_v):
+                maxim = x
+                max_v = items_v
+        
+            items_v = []
+            items_w = []
+    
+        return maxim
 
     def weight(self, X: tuple[int, ...]) -> int:
         """
